@@ -1,19 +1,18 @@
-FROM debian:latest
-
+FROM python:latest
 RUN apt update && apt upgrade -y
+RUN apt install git pip curl python3-pip -y
 
-RUN apt install git curl python3-pip ffmpeg -y
+ENV LANG en_US.UTF-8
+ENV LC_ALL en_US.UTF-8
+ENV LANGUAGE en_US:en
+ENV TZ=Asia/Kolkata DEBIAN_FRONTEND=noninteractive
 
-RUN pip3 install -U pip
+WORKDIR /usr/src/app
+COPY . .
+RUN chmod 777 /usr/src/app
 
-RUN cd /
+RUN pip3 install --upgrade pip setuptools wheel
+RUN pip3 install -r requirements.txt
+RUN apt-get -qq purge git && apt-get -y autoremove && apt-get -y autoclean
 
-RUN git clone https://github.com/ramo-jack/FileToLink
-
-RUN cd Filestreambot-pro
-
-WORKDIR /Adarsh
-
-RUN pip3 install -U -r requirements.txt
-
-CMD python -m Adarsh
+CMD ["bash", "start.sh"]
